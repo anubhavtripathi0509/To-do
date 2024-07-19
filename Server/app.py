@@ -63,6 +63,12 @@ def login_user():
         "id": user.id,
         "email": user.email
     })
+
+@app.route("/logout", methods=["POST"])
+def logout_user():
+    session.pop("user_id", None)
+    return jsonify({"message": "Logged out successfully"})
+
  
 if __name__ == "__main__":
     app.run(debug=True)
