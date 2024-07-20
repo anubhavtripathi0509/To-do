@@ -3,6 +3,7 @@ from flask_bcrypt import Bcrypt
 from flask_cors import CORS, cross_origin
 from authlib.integrations.flask_client import OAuth
 import json
+from urllib.parse import quote_plus, urlencode
 from models import db, User
 
 app = Flask(__name__)
@@ -80,10 +81,33 @@ def signup():
         "email": new_user.email
     })
 
+@app.route("/loggedout")
+def loggedOut():
+    # check if session already present
+    if "user" in session:
+        abort(404)
+    # return redirect(url_for("hello_world"))
+    return "You are logged out..."
+
 @app.route("/logout", methods=["POST"])
 def logout_user():
-    session.pop("user_id", None)
+    # Clear the local Flask session
+    session.clear()
+    print("Session cleared")
+
+    # Redirect to OAuth provider logout URL
+    if "user" in session:
+        id_token = session.get("user", {}).get("id_token")
+        if id_token:
+            logout_url = (
+                f'{appConf.get("OAUTH2_ISSUER")}/protocol/openid-connect/logout?'
+                f'{urlencode({"post_logout_redirect_uri": url_for("loggedOut", _external=True), "id_token_hint": id_token})}'
+            )
+            print(f"Redirecting to OAuth logout URL: {logout_url}")
+            return redirect(logout_url)
+
     return jsonify({"message": "Logged out successfully"})
+
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)

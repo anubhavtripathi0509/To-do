@@ -17,7 +17,7 @@ function Header() {
         try {
             const response = await fetch("http://127.0.0.1:5000/logout", {
                 method: "POST",
-                credentials: "include"
+                credentials: "include", // Ensure cookies are included in the request
             });
             if (response.ok) {
                 localStorage.removeItem('authToken');
@@ -31,6 +31,7 @@ function Header() {
             console.error("Logout error", error);
         }
     };
+    
     
 
     return (
@@ -57,7 +58,7 @@ function Header() {
                         <li><a className="text-gray-600 hover:text-blue-600" href="#">Demo</a></li>
                         <li><a className="text-gray-600 hover:text-blue-600" href="#">Support</a></li>
                         <li className="mt-2 sm:mt-0">
-                            {isLoggedIn ? (
+                            {/* {isLoggedIn ? (
                                 <button
                                     onClick={handleLogout}
                                     className="rounded-xl border-2 border-blue-600 px-6 py-2 font-medium text-blue-600 hover:bg-blue-600 hover:text-white"
@@ -71,7 +72,20 @@ function Header() {
                                 >
                                     Login
                                 </a>
-                            )}
+                            )} */}
+                                <button
+                                    onClick={handleLogout}
+                                    className="rounded-xl border-2 border-blue-600 px-6 py-2 font-medium text-blue-600 hover:bg-blue-600 hover:text-white"
+                                >
+                                    Logout
+                                </button>
+
+                                <a
+                                    className="rounded-xl border-2 border-blue-600 px-6 py-2 font-medium text-blue-600 hover:bg-blue-600 hover:text-white"
+                                    href="http://127.0.0.1:5000/login"
+                                >
+                                    Login
+                                </a>
                         </li>
                     </ul>
                 </nav>
